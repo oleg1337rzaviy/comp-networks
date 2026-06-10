@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Калькулятор чаевых</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 50px;
+        }
+        .block {
+            margin-bottom: 15px;
+        }
+        input {
+            padding: 5px;
+            width: 200px;
+        }
+        button {
+            padding: 8px 20px;
+            margin: 10px 0;
+            cursor: pointer;
+        }
+        .result {
+            margin: 10px 0;
+            font-size: 16px;
+        }
+        .error {
+            color: red;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+
+<h2>Калькулятор чаевых</h2>
+
+<div class="block">
+    <label>Сумма счёта (руб):</label><br>
+    <input type="number" id="bill" value="1000" step="any">
+</div>
+
+<div class="block">
+    <label>Процент чаевых (0-50):</label><br>
+    <input type="number" id="tip" value="15" min="0" max="50">
+</div>
+
+<div class="block">
+    <label>Количество человек:</label><br>
+    <input type="number" id="people" value="1" min="1">
+</div>
+
+<button onclick="calculate()">Рассчитать</button>
+
+<div id="errorMsg" class="error"></div>
+
+<div class="result" id="tipResult"></div>
+<div class="result" id="totalResult"></div>
+<div class="result" id="perPersonResult"></div>
+
+<script>
+function calculate() {
+    // Получаем значения
+    let bill = parseFloat(document.getElementById('bill').value);
+    let tipPercent = parseFloat(document.getElementById('tip').value);
+    let people = parseInt(document.getElementById('people').value);
+    
+    // Очищаем ошибки
+    document.getElementById('errorMsg').innerHTML = '';
+    
+    // Проверки
+    let hasError = false;
+    
+    if (isNaN(bill) || bill < 0) {
+        document.getElementById('errorMsg').innerHTML += 'Сумма счёта не может быть меньше 0<br>';
+        hasError = true;
+    }
+    
+    if (isNaN(tipPercent) || tipPercent < 0 || tipPercent > 50) {
+        document.getElementById('errorMsg').innerHTML += 'Процент чаевых должен быть от 0 до 50<br>';
+        hasError = true;
+    }
+    
+    if (isNaN(people) || people < 1) {
+        document.getElementById('errorMsg').innerHTML += 'Количество человек не может быть меньше 1<br>';
+        hasError = true;
+    }
+    
+    if (hasError) {
+        // Очищаем результаты
+        document.getElementById('tipResult').innerHTML = '';
+        document.getElementById('totalResult').innerHTML = '';
+        document.getElementById('perPersonResult').innerHTML = '';
+        return;
+    }
+    
+    // Расчёты
+    let tipAmount = bill * (tipPercent / 100);
+    let totalAmount = bill + tipAmount;
+    let perPerson = totalAmount / people;
+    
+    // Вывод результатов (округляем до 2 знаков)
+    document.getElementById('tipResult').innerHTML = 'Сумма чаевых: ' + tipAmount.toFixed(2) + ' рублей';
+    document.getElementById('totalResult').innerHTML = 'Общая сумма: ' + totalAmount.toFixed(2) + ' рублей';
+    
+    let peopleText = people + ' ' + (people === 1 ? 'человек' : 'человека');
+    document.getElementById('perPersonResult').innerHTML = 'Каждый должен заплатить по ' + perPerson.toFixed(2) + ' рублей (' + peopleText + ')';
+}
+</script>
+
+</body>
+</html>

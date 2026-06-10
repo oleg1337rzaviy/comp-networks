@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Проверка номера телефона</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+        input, button {
+            font-size: 16px;
+            padding: 8px;
+            margin: 5px 0;
+        }
+        .valid {
+            color: green;
+            font-weight: bold;
+        }
+        .invalid {
+            color: red;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>Проверка номера телефона</h2>
+    
+    <label>Номер телефона:</label><br>
+    <input type="tel" id="phone" placeholder="+79161234567 или 89161234567 или 9161234567"><br><br>
+    
+    <button onclick="checkPhone()">Проверить номер</button><br><br>
+    
+    <p id="message"></p>
+
+    <script>
+        function checkPhone() {
+            let phone = document.getElementById('phone').value.trim();
+            let message = document.getElementById('message');
+            
+            // 1. Проверка на пустой номер
+            if (phone === "") {
+                message.innerHTML = "Номер не может быть пустым!";
+                message.className = "invalid";
+                return;
+            }
+            
+            // 2. Проверка на допустимые символы (только цифры и + в начале)
+            let allowed = /^[0-9+]+$/;
+            if (!allowed.test(phone)) {
+                message.innerHTML = "Номер может содержать только цифры и знак + в начале!";
+                message.className = "invalid";
+                return;
+            }
+            
+            // 3. Проверка на правильное расположение плюса
+            if (phone.indexOf('+') > 0) {
+                message.innerHTML = "Знак + может быть только в начале номера!";
+                message.className = "invalid";
+                return;
+            }
+            
+            // 4. Проверка количества плюсов (не больше одного)
+            let plusCount = (phone.match(/\+/g) || []).length;
+            if (plusCount > 1) {
+                message.innerHTML = "Знак + может быть только один!";
+                message.className = "invalid";
+                return;
+            }
+            
+            // 5. Проверка форматов
+            let length = phone.length;
+            
+            // Формат 1: +7 и 10 цифр (всего 12 символов)
+            if (phone[0] === '+' && phone[1] === '7' && length === 12) {
+                let rest = phone.substring(2);
+                if (/^\d{10}$/.test(rest)) {
+                    message.innerHTML = "✓ Номер телефона верный!";
+                    message.className = "valid";
+                    return;
+                }
+            }
+            
+            // Формат 2: 8 и 10 цифр (всего 11 символов)
+            if (phone[0] === '8' && length === 11) {
+                let rest = phone.substring(1);
+                if (/^\d{10}$/.test(rest)) {
+                    message.innerHTML = "✓ Номер телефона верный!";
+                    message.className = "valid";
+                    return;
+                }
+            }
+            
+            // Формат 3: 10 цифр подряд (всего 10 символов)
+            if (length === 10 && /^\d{10}$/.test(phone)) {
+                message.innerHTML = "✓ Номер телефона верный!";
+                message.className = "valid";
+                return;
+            }
+            
+            // Если ничего не подошло
+            message.innerHTML = "Неверный формат номера! Используйте: +7XXXXXXXXXX, 8XXXXXXXXXX или XXXXXXXXXX (10 цифр)";
+            message.className = "invalid";
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Чётное или нечётное</title>
+</head>
+<body>
+    <h1>Чётное или нечётное?</h1>
+    
+    <input type="number" id="numberInput" placeholder="Введите число">
+    <button id="checkBtn">Проверить</button>
+    
+    <p id="result"></p>
+
+    <script>
+        // Получаем элементы
+        const input = document.getElementById('numberInput');
+        const button = document.getElementById('checkBtn');
+        const result = document.getElementById('result');
+
+        // Функция проверки
+        function checkNumber() {
+            // Проверяем, пустое ли поле
+            if (input.value === '') {
+                result.textContent = 'Введите число';
+                return;
+            }
+            
+            // Получаем число
+            const number = Number(input.value);
+            
+            // Проверяем на чётность
+            if (number % 2 === 0) {
+                result.textContent = 'Чётное';
+            } else {
+                result.textContent = 'Нечётное';
+            }
+        }
+
+        // Вешаем обработчик на кнопку
+        button.onclick = checkNumber;
+    </script>
+</body>
+</html>

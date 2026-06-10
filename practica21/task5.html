@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Калькулятор ИМТ</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f0f2f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            background: white;
+            max-width: 450px;
+            width: 100%;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+            font-size: 28px;
+            margin-top: 0;
+            margin-bottom: 25px;
+        }
+        .input-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 8px;
+            color: #555;
+        }
+        input {
+            width: 100%;
+            padding: 12px;
+            font-size: 16px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            box-sizing: border-box;
+        }
+        input:focus {
+            outline: none;
+            border-color: #4CAF50;
+        }
+        button {
+            width: 100%;
+            padding: 12px;
+            background: #4CAF50;
+            color: white;
+            font-size: 18px;
+            font-weight: bold;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            margin: 10px 0 20px;
+        }
+        button:hover {
+            background: #45a049;
+        }
+        .result {
+            background: #f9f9f9;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+        }
+        .bmi-value {
+            font-size: 36px;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+        .comment {
+            font-size: 18px;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+        .recommend {
+            background: #e9ecef;
+            padding: 12px;
+            border-radius: 8px;
+            margin-top: 10px;
+            color: #333;
+        }
+        .error {
+            color: red;
+            text-align: center;
+            margin-top: 10px;
+        }
+        hr {
+            margin: 15px 0;
+            border: none;
+            border-top: 1px solid #ddd;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>📊 Калькулятор ИМТ</h1>
+
+    <div class="input-group">
+        <label>📏 Рост (см)</label>
+        <input type="number" id="height" placeholder="от 50 до 250" value="170" min="50" max="250">
+    </div>
+
+    <div class="input-group">
+        <label>⚖️ Вес (кг)</label>
+        <input type="number" id="weight" placeholder="от 10 до 300" value="70" min="10" max="300" step="0.1">
+    </div>
+
+    <button onclick="calculateBMI()">Рассчитать ИМТ</button>
+
+    <div class="result" id="result">
+        <div>Ваш ИМТ:</div>
+        <div class="bmi-value" id="bmiValue">—</div>
+        <div class="comment" id="comment">Введите данные</div>
+        <div class="recommend" id="recommend">📝 Нажмите кнопку для расчёта</div>
+    </div>
+</div>
+
+<script>
+    function calculateBMI() {
+        // Получаем значения
+        let heightCm = parseFloat(document.getElementById('height').value);
+        let weightKg = parseFloat(document.getElementById('weight').value);
+
+        // Проверка на корректность
+        if (isNaN(heightCm) || isNaN(weightKg)) {
+            showError('Пожалуйста, введите числа');
+            return;
+        }
+
+        if (heightCm < 50 || heightCm > 250) {
+            showError('Рост должен быть от 50 до 250 см');
+            return;
+        }
+
+        if (weightKg < 10 || weightKg > 300) {
+            showError('Вес должен быть от 10 до 300 кг');
+            return;
+        }
+
+        // Считаем ИМТ
+        let heightM = heightCm / 100;
+        let bmi = weightKg / (heightM * heightM);
+        let bmiRounded = bmi.toFixed(2);
+
+        // Показываем ИМТ
+        document.getElementById('bmiValue').innerHTML = bmiRounded;
+
+        // Определяем комментарий и цвет
+        let comment = '';
+        let color = '';
+        let recommendation = '';
+
+        if (bmi < 16) {
+            comment = 'Выраженный дефицит массы тела';
+            color = 'red';
+            recommendation = '🍽️ Рекомендуется сбалансированное питание с повышенной калорийностью';
+        }
+        else if (bmi >= 16 && bmi <= 18.4) {
+            comment = 'Недостаточная масса тела';
+            color = 'orange';
+            recommendation = '🍽️ Рекомендуется сбалансированное питание с повышенной калорийностью';
+        }
+        else if (bmi >= 18.5 && bmi <= 24.9) {
+            comment = 'Нормальная масса тела';
+            color = 'green';
+            recommendation = '🎉 Отличный результат! Поддерживайте здоровый образ жизни';
+        }
+        else if (bmi >= 25 && bmi <= 29.9) {
+            comment = 'Избыточная масса тела (предожирение)';
+            color = 'orange';
+            recommendation = '🏃 Рекомендуется увеличить физическую активность и скорректировать питание';
+        }
+        else if (bmi >= 30 && bmi <= 34.9) {
+            comment = 'Ожирение I степени';
+            color = 'red';
+            recommendation = '👨‍⚕️ Рекомендуется консультация врача-диетолога';
+        }
+        else if (bmi >= 35 && bmi <= 39.9) {
+            comment = 'Ожирение II степени';
+            color = 'red';
+            recommendation = '👨‍⚕️ Рекомендуется консультация врача-диетолога';
+        }
+        else if (bmi >= 40) {
+            comment = 'Ожирение III степени';
+            color = 'darkred';
+            recommendation = '👨‍⚕️ Рекомендуется консультация врача-диетолога';
+        }
+
+        // Выводим результат
+        let commentDiv = document.getElementById('comment');
+        commentDiv.innerHTML = comment;
+        commentDiv.style.color = color;
+
+        document.getElementById('recommend').innerHTML = '💡 ' + recommendation;
+        document.getElementById('recommend').style.background = '#e9ecef';
+    }
+
+    function showError(msg) {
+        document.getElementById('bmiValue').innerHTML = '—';
+        document.getElementById('comment').innerHTML = 'Ошибка';
+        document.getElementById('comment').style.color = 'red';
+        document.getElementById('recommend').innerHTML = '⚠️ ' + msg;
+        document.getElementById('recommend').style.background = '#ffe0e0';
+    }
+</script>
+
+</body>
+</html>
